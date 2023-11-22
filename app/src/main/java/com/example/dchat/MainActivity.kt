@@ -5,11 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,11 +23,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -82,6 +85,9 @@ class MainActivity : ComponentActivity() {
 }
 
 
+/**
+ * @Composable for displaying the main menu
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DChatAppBar() {
@@ -194,14 +200,14 @@ fun DChatSingle(navController: NavHostController, id: Int?) {
             Text(text = "Zurück zu Chats")
         }
         if (id != null) {
-            SingleChat(id)
+            MessageList(id)
         }
     }
 }
 
 @Composable
-fun SingleChat(id: Int = -1) {
-    // retrieve chat from database by id
+fun MessageList(id: Int = -1) {
+    // TODO: retrieve chat from database by id
     val chatList = remember {
         mutableListOf<MessageObject>(
             MessageObject(0, "Hello X", true),
@@ -211,26 +217,31 @@ fun SingleChat(id: Int = -1) {
     }
     Column(modifier = Modifier.fillMaxWidth()) {
         chatList.forEach { msg ->
-            SingleChatLine(msg)
+            MessageItem(msg)
         }
     }
 }
 
 @Composable
-fun SingleChatLine(msg: MessageObject) {
+fun MessageItem(msg: MessageObject) {
     val c = if (msg.isSender) Color.Cyan else Color.Gray
-    val offset = if (msg.isSender) 40.dp else 0.dp
-    Box(
-        modifier = Modifier.offset(x = offset)
+    val arrangement = if (msg.isSender) Arrangement.End else Arrangement.Start
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = arrangement,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.8F)
-                .padding(12.dp)
+                .fillMaxWidth(0.8f)
+                .padding(6.dp)
+                .shadow(elevation = 4.dp)
                 .background(color = c)
-                .shadow(elevation = 6.dp)
         ) {
-            Text(text = msg.text)
+            Text(
+                text = msg.text,
+                modifier = Modifier.padding(8.dp)
+            )
         }
     }
 }
@@ -249,6 +260,6 @@ fun PreviewDChatApp() {
 @Composable
 fun PreviewSingleChat() {
     DChatTheme {
-        SingleChat()
+        MessageList()
     }
 }
