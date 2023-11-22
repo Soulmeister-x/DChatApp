@@ -97,16 +97,22 @@ fun DChatAppBar() {
         },
         actions = {
             // Menu on the right
-            IconButton(
-                onClick = {
-                    // Handle menu click
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary
+            Row {
+                Switch(
+                    checked = false,
+                    onCheckedChange = {}
                 )
+                IconButton(
+                    onClick = {
+                        // Handle menu click
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondary
+                    )
+                }
             }
         },
         modifier = Modifier.shadow(elevation = AppBarDefaults.TopAppBarElevation),
