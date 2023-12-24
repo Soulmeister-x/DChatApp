@@ -36,6 +36,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
+import com.example.dchat.db.AppDatabase
+import com.example.dchat.db.Message
 import com.example.dchat.ui.theme.DChatTheme
 
 
@@ -67,6 +70,19 @@ fun MyAppNavHost(
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // init db
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "chats"
+        ).build()
+
+        // get an instance of the DAO
+        // you can use the methods from the DAO instance to
+        // interact with the database
+        val userDao = db.chatDao()
+        val chats: List<Message> = userDao.getAllChats()
+
         setContent {
             DChatTheme {
                 // A surface container using the 'background' color from the theme
