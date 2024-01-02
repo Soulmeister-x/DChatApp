@@ -1,8 +1,10 @@
 package com.example.dchat
 
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,14 +37,22 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.room.Room
 import com.example.dchat.db.AppDatabase
-import com.example.dchat.db.Message
+import com.example.dchat.db.ChatsRepository
+import com.example.dchat.db.entities.Chat
 import com.example.dchat.ui.theme.DChatTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 
 // TODO: move AppNavHost to separate file
@@ -74,17 +84,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // init db
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java, "chats"
-        ).build()
 
-        // get an instance of the DAO
-        // you can use the methods from the DAO instance to
-        // interact with the database
-        val userDao = db.chatDao()
-        val chats: List<Message> = userDao.getAllChats()
+        val viewModel: ChatViewModel by viewModels()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect {
+                    // TODO: Update UI Elements
+                }
+            }
+        }
 
         setContent {
             DChatTheme {
@@ -98,6 +106,28 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+
+data class ChatsUiState(
+    val chats: List<Chat>
+)
+
+class ChatViewModel(application: Application): AndroidViewModel(application) {
+
+    private val repository: ChatsRepository
+    private val chats: List<Chat>
+
+    init {
+        val chatDao = AppDatabase.getDatabase(application).chatDao()
+        repository = ChatsRepository(chatDao)
+        chats = repository.getAllChats()
+    }
+
+    private val _uiState = MutableStateFlow(ChatsUiState(chats))
+    val uiState: StateFlow<ChatsUiState> = _uiState.asStateFlow()
+
+
 }
 
 
