@@ -4,21 +4,21 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.dchat.db.Message
+import com.example.dchat.db.entities.Chat
 
 @Dao
 interface ChatDao {
     @Query("SELECT * FROM chats")
-    fun getAllChats(): List<Message>
+    fun getAllChats(): List<Chat>
 
     @Query("SELECT * FROM chats WHERE chatId = :chatId")
-    fun findById(chatId: Int): List<Message>
+    fun findChatById(chatId: Int): Chat
 
     @Insert
-    fun insertChat(chat: List<Message>)
+    fun insertChat(chat: Chat)
 
     @Insert
-    fun insertAllChats(vararg chats: List<Message>)
+    fun insertAllChats(chats: List<Chat>)
 
     @Delete
     fun delete(chatId: Int)
