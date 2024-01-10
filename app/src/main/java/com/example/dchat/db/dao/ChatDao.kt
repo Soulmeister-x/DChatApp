@@ -5,14 +5,15 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.dchat.db.entities.Chat
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ChatDao {
     @Query("SELECT * FROM chats")
-    fun getAllChats(): List<Chat>
+    fun getAllChats(): Flow<List<Chat>>
 
     @Query("SELECT * FROM chats WHERE chatId = :chatId")
-    fun findChatById(chatId: Int): Chat
+    fun getChatById(chatId: Int): Chat
 
     @Insert
     fun insertChat(chat: Chat)
