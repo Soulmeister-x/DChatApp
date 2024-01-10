@@ -4,8 +4,19 @@ import com.example.dchat.db.dao.ChatDao
 import com.example.dchat.db.entities.Chat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.java.KoinJavaComponent.inject
 
-class ChatsRepository(private val chatDao: ChatDao) {
+interface DataRepository {
+    fun getAllChats(): Flow<List<Chat>>
+}
+
+
+
+class ChatsRepository constructor(
+    database: AppDatabase
+): DataRepository {
+
+    val chatDao = database.chatDao()
 
 /*
     suspend fun getAllChats(): Flow<List<Chat>> = flow {
@@ -13,10 +24,10 @@ class ChatsRepository(private val chatDao: ChatDao) {
     }
 
  */
-    fun getAllChats(): List<Chat> = chatDao.getAllChats()
+    override fun getAllChats(): Flow<List<Chat>> = chatDao.getAllChats()
 
     suspend fun findChatById(chatId: Int): Flow<Chat> = flow {
-        emit(chatDao.findChatById(chatId))
+        emit(chatDao.getChatById(chatId))
     }
 
     suspend fun insertChat(chat: Chat) =
