@@ -6,6 +6,9 @@ import androidx.room.RoomDatabase
 import com.example.dchat.DChatApplication
 import com.example.dchat.db.dao.ChatDao
 import com.example.dchat.db.entities.Chat
+import com.example.dchat.db.entities.Contact
+import com.example.dchat.db.entities.Message
+import java.sql.Timestamp
 
 @Database(entities = [Chat::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
@@ -27,8 +30,16 @@ abstract class AppDatabase : RoomDatabase() {
                     "chats"
                 ).build()
                 INSTANCE = instance
+
+                // TODO: remove, when real transactions implemented
+                insertMockData()
+
                 return instance
             }
+        }
+
+        private fun insertMockData() {
+            INSTANCE!!.chatDao().insertAllChats(mockChats)
         }
     }
 }

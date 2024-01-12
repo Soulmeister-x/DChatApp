@@ -1,10 +1,9 @@
-package com.example.dchat.db
+package com.example.dchat.repositories
 
-import com.example.dchat.db.dao.ChatDao
+import com.example.dchat.db.AppDatabase
 import com.example.dchat.db.entities.Chat
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.koin.java.KoinJavaComponent.inject
 
 interface DataRepository {
     fun getAllChats(): Flow<List<Chat>>

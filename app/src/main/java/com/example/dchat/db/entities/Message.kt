@@ -2,11 +2,16 @@ package com.example.dchat.db.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import java.sql.Timestamp
 
 @Entity
 data class Message(
-    @PrimaryKey val mid: Int,
-    @ColumnInfo(name = "content") val content: String,
-    @ColumnInfo(name = "senderId") val senderId: Int
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    val chatId: Int,
+    val content: String,
+    val senderId: Int,
+    val recipientId: Int,
+    val timestamp: Timestamp,
 )

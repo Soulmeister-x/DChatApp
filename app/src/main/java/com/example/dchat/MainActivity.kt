@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
@@ -28,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,8 +43,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.dchat.db.entities.Chat
+import com.example.dchat.ui.ChatsListFragment
 import com.example.dchat.ui.theme.DChatTheme
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
@@ -54,17 +57,19 @@ import org.koin.android.ext.android.inject
 fun MyAppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = "chats"
+    startDestination: String = "chats",
+    uiState: ChatsUiState
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
     ) {
         composable("chats") {
             DChatList(
                 modifier = modifier,
-                onNavigateToChat = { navController.navigate("chats/{chatId}")}
+                onNavigateToChat = { navController.navigate("chats/{chatId}")},
+                uiState
             )
         }
         composable("chats/{chatId}") { backStackEntry ->
@@ -83,23 +88,24 @@ class MainActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect {
+                viewModel.uiState.collect { state ->
                     // TODO: Update UI Elements
+                    setContent {
+                        DChatTheme {
+                            // A surface container using the 'background' color from the theme
+                            Surface(
+                                modifier = Modifier.fillMaxSize(),
+                                color = MaterialTheme.colorScheme.background
+                            ) {
+                                val navController = MyAppNavHost(uiState = state)
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        setContent {
-            DChatTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val navController = MyAppNavHost()
-                }
-            }
-        }
+
     }
 }
 
@@ -158,29 +164,21 @@ fun DChatAppBar() {
 @Composable
 fun DChatList(
     modifier: Modifier,
-    onNavigateToChat: () -> Unit
+    onNavigateToChat: () -> Unit,
+    uiState: ChatsUiState
 ) {
-    // Dummy chat data
-    val chatList = remember {
-        mutableListOf(
-            Pair(0,"Chat 1"),
-            Pair(1,"Chat 2"),
-            Pair(2,"Chat 3"),
-            // Add more chats as needed
-        )
-    }
+    val chats = uiState.chats.collectAsState(listOf()).value
 
     Column {
         DChatAppBar()
-        //Text(text = "Welcome to DChat", style = MaterialTheme.typography.headlineMedium)
 
         LazyColumn(
             modifier = modifier
                 .fillMaxSize()
                 .padding(top = AppBarDefaults.TopAppBarHeight),
         ) {
-            items(chatList) { chat ->
-                DChatItem(id = chat.first, chat = chat.second, onNavigateToChat = onNavigateToChat)
+            items(chats.size) { id ->
+                DChatItem(id = chats[id].id, chatPreview = chats[id].messages.last().content, onNavigateToChat = onNavigateToChat)
             }
         }
     }
@@ -188,7 +186,7 @@ fun DChatList(
 
 @Composable
 fun DChatItem(
-    chat: String,
+    chatPreview: String,
     id: Int,
     onNavigateToChat: () -> Unit
 ) {
@@ -204,7 +202,7 @@ fun DChatItem(
     ) {
         // Content of each chat item
         Text(
-            text = chat,
+            text = chatPreview,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(16.dp)
         )
@@ -271,6 +269,7 @@ fun MessageItem(msg: MessageObject) {
 }
 
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun PreviewDChatApp() {
@@ -278,6 +277,8 @@ fun PreviewDChatApp() {
         MyAppNavHost()
     }
 }
+
+ */
 
 
 @Preview(showBackground = true)
