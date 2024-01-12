@@ -2,10 +2,10 @@ package com.example.dchat
 
 import android.app.Application
 import com.example.dchat.db.AppDatabase
-import com.example.dchat.db.ChatsRepository
+import com.example.dchat.repositories.ChatsRepository
 import com.example.dchat.db.entities.Chat
 import com.example.dchat.db.entities.Message
-import org.koin.android.ext.android.get
+import com.example.dchat.ui.ChatsListFragment
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -25,8 +25,10 @@ val appModule = module {
     single { AppDatabase.getInstance(DChatApplication()) }
 
     viewModel { ChatViewModel(ChatsRepository(get())) }
-    factory { Message(get(), get(), get()) }
-    factory { Chat(get(), get()) }
+    factory { Message(get(), get(), get(), get(), get(), get()) }
+    factory { Chat(get(), get(), get()) }
+
+    single { ChatsListFragment() }
 }
 
 
