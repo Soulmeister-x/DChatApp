@@ -1,6 +1,5 @@
 package com.example.dchat.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +24,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -34,11 +36,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.dchat.AppBarDefaults
-import com.example.dchat.ChatPreview
-import com.example.dchat.ChatsUiState
+import com.example.dchat.UiState
 import com.example.dchat.data.entities.Message
-import com.example.dchat.data.mockChats
-import com.example.dchat.data.testChat
+import com.example.dchat.data.mockMessages
 import com.example.dchat.ui.theme.DChatTheme
 
 /**
@@ -47,6 +47,7 @@ import com.example.dchat.ui.theme.DChatTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DChatAppBar() {
+    var switchIsChecked by remember { mutableStateOf(false) }
     TopAppBar(
         title = {
             // Title in the middle
@@ -61,8 +62,8 @@ fun DChatAppBar() {
             // Menu on the right
             Row {
                 Switch(
-                    checked = false,
-                    onCheckedChange = {}
+                    checked = switchIsChecked,
+                    onCheckedChange = {switchIsChecked = it}
                 )
                 IconButton(
                     onClick = {
@@ -91,7 +92,7 @@ fun DChatAppBar() {
 fun DChatList(
     modifier: Modifier,
     onNavigateToChat: () -> Unit,
-    uiState: ChatsUiState
+    uiState: UiState
     //chatPreviewList: List<ChatPreview>
 ) {
     val chats = uiState.getPreviewList()
@@ -143,17 +144,18 @@ fun DChatItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DChatSingle(navController: NavHostController, id: Int?) {
-    val inputText = remember { "" }
+    var inputText by remember { mutableStateOf("") }
     Column {
         Button(onClick = { navController.popBackStack() }) {
             Text(text = "Zurück zu Chats")
         }
         if (id != null) {
-            MessageList(mockChats[id].messages)
+            MessageList(mockMessages)
         }
         Row {
-            TextField(value = inputText, onValueChange = {})
-            Button(onClick = { }) {
+            TextField(value = inputText, onValueChange = { inputText = it })
+            // Henry: Wie übergebe ich hier eine Funktion aus dem ViewModel, die als Parameter den Text und die ChatId nimmt?
+            Button(onClick = {  }) {
                 "SEND"
             }
         }
@@ -197,6 +199,6 @@ fun MessageItem(msg: Message) {
 @Composable
 fun PreviewSingleChat() {
     DChatTheme {
-        MessageList(testChat.messages)
+        MessageList(mockMessages)
     }
 }

@@ -17,6 +17,9 @@ interface ChatDao {
     @Upsert
     suspend fun insertChat(chat: Chat)
 
+    @Query("DELETE FROM chats")
+    suspend fun deleteAllChats()
+
     @Query("DELETE FROM chats WHERE id = :chatId")
     suspend fun deleteChatById(chatId: Int)
 }

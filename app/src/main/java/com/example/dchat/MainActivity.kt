@@ -23,7 +23,6 @@ class MainActivity : ComponentActivity() {
 
         appDataContainer = AppDataContainer(applicationContext)
         appDb = AppDatabase.getInstance(applicationContext)
-        appDao = appDb.chatDao()
         val viewModel = ChatViewModel(appDataContainer)
 
         // update uiState

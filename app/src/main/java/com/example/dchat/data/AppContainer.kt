@@ -15,10 +15,15 @@ interface AppContainer {
  * [AppContainer] implementation that provides instance of [ChatsRepositoryImpl].
  */
 class AppDataContainer(private val context: Context) : AppContainer {
+
+    private val appDb = AppDatabase.getInstance(context)
     /**
      * Implementation for [ChatsRepository].
      */
     override val chatsRepository: ChatsRepository by lazy {
-        ChatsRepositoryImpl(AppDatabase.getInstance(context).chatDao())
+        ChatsRepositoryImpl(
+            appDb.messageDao(),
+            appDb.chatDao()
+        )
     }
 }

@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dchat.data.AppDataContainer
 import com.example.dchat.data.entities.Chat
-import com.example.dchat.data.mockChats
+import com.example.dchat.data.entities.Message
+import com.example.dchat.data.mockMessages
 import com.example.dchat.data.repositories.ChatsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -35,17 +36,18 @@ class ChatViewModel(
 
     private val repository: ChatsRepository
 
-    private var _uiState: MutableStateFlow<ChatsUiState>
-    var uiState: StateFlow<ChatsUiState>
+    private var _uiState: MutableStateFlow<UiState>
+    var uiState: StateFlow<UiState>
 
     init {
         repository = dataContainer.chatsRepository
-        _uiState = MutableStateFlow(ChatsUiState())
+        _uiState = MutableStateFlow(UiState())
         uiState = _uiState.asStateFlow()
 
         // todo: remove MockData after adding functionalities for adding messages
         runBlocking {
-            insertAllChats(mockChats)
+            deleteAllChats()
+            insertAllChats(mockMessages)
         }
     }
 
@@ -57,15 +59,14 @@ class ChatViewModel(
      */
     fun fetchAllChats() {
         viewModelScope.launch {
-            Log.i("log", "start fetching chats")
             try {
-                repository.getAllChats()
+                repository.getAllMessagesSortedByChatId()
                     .flowOn(Dispatchers.IO)
                     .distinctUntilChanged()
-                    .collect { chats: List<Chat> ->
+                    .collect { messages: List<Message> ->
                     _uiState.update {
                         //ChatsUiState(chats)
-                        it.copy(chatDetailsList = chats)
+                        it.copy(chatDetailsList = messages)
                     }
                 }
             } catch (ioe: IOException) {
@@ -80,10 +81,18 @@ class ChatViewModel(
      * 2. [Dispatchers.IO] is used to change the dispatcher of the coroutine to IO, which is optimal for IO operations, and does not block the main thread.
      * 3. [ChatsRepository.insertAllChats(chatList)] is used to add the chat to the database.
      */
-    fun insertAllChats(chatList: List<Chat>) {
+    fun insertAllChats(chatList: List<Message>) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.insertAllChats(chatList)
-            Log.i("log", "finished inserting chats")
+            repository.insertAllMessages(chatList)
+        }
+    }
+
+    /**
+     * This function is used to remove all chats from the database.
+     */
+    fun deleteAllChats() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllChats()
         }
     }
 
@@ -93,9 +102,9 @@ class ChatViewModel(
      * 2. [Dispatchers.IO] is used to change the dispatcher of the coroutine to IO, which is optimal for IO operations, and does not block the main thread.
      * 3. [ChatsRepository.insertChat(chat)] is used to add the chat to the database.
      */
-    fun insertChat(chat: Chat) {
+    fun insertChat(chat: List<Message>) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.insertChat(chat)
+            repository.insertAllMessages(chat)
         }
     }
 
@@ -105,19 +114,19 @@ class ChatViewModel(
      * 2. [Dispatchers.IO] is used to change the dispatcher of the coroutine to IO, which is optimal for IO operations, and does not block the main thread.
      * 3. [ChatsRepository.updateChat(chat)] is used to update the chat in the database.
      */
-    fun updateChat(chat: Chat) {
+    fun updateChat(chat: List<Message>) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.updateChat(chat)
+            repository.updateMessages(chat)
         }
     }
 }
 
-data class ChatsUiState(
-    val chatDetailsList: List<Chat> = listOf(),
+data class UiState(
+    val chatDetailsList: List<Message> = listOf(),
 ) {
     fun getPreviewList(): List<ChatPreview> =
         this.chatDetailsList.map { chat ->
-            ChatPreview(chat.id, chat.messages.last().content)
+            ChatPreview(chat.id, chat.content)
         }
 }
 
