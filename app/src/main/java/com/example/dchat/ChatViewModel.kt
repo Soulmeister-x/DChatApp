@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
@@ -44,7 +43,7 @@ class ChatViewModel(
         _uiState = MutableStateFlow(ChatsUiState())
         uiState = _uiState.asStateFlow()
 
-        // todo: remove MockData
+        // todo: remove MockData after adding functionalities for adding messages
         runBlocking {
             insertAllChats(mockChats)
         }

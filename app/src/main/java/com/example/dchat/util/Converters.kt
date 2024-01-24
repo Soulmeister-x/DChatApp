@@ -27,15 +27,6 @@ class Converters {
 
     @TypeConverter
     fun contactsStringToContactsList(contactsString: String): List<Contact> {
-        /*
-        val tmp = contactsString
-            .replace("[", "")
-            .replace("]", "")
-            .replace(" ", "")
-
-        tmp.split(",").forEach {
-        }
-         */
 
         return try {
             Gson().fromJson<List<Contact>>(contactsString)
@@ -77,56 +68,7 @@ class Converters {
             )
         }
     }
-    /*
-    fun Message.toMessageDetails(): MessageDetails = MessageDetails(
-        id, chatId, content, senderId, recipientId, timestamp
-    )
 
-    @TypeConverter
-    fun Contact.toContactDetails(): ContactDetails = ContactDetails(
-        id, code, name
-    )
-    /*
-    fun Chat.toChatDetails(): ChatDetails = ChatDetails(
-        id = id,
-        participants = participants.map { it.toContactDetails() },
-        messages = messages.map { it.toMessageDetails() }
-    )
-     */
-    @TypeConverter
-    fun Chat.toChatDetails(): ChatDetails = ChatDetails(
-        id = id,
-        participants = participants.contacts.map { it.toContactDetails() },
-        messages = messages.messages.map { it.toMessageDetails() }
-    )
-     */
-    //endregion
-
-    //region Converters: Details -> SQL
-    /*
-    @TypeConverter
-    fun MessageDetails.toMessage(): Message = Message(
-        id, chatId, content, senderId, recipientId, timestamp
-    )
-    @TypeConverter
-    fun ContactDetails.toContact(): Contact = Contact(
-        id, code, name
-    )
-    /*
-    fun ChatDetails.toChat(): Chat = Chat(
-        id = id,
-        participants = participants.map { it.toContact() },
-        messages = messages.map { it.toMessage() }
-    )
-     */
-    @TypeConverter
-    fun ChatDetails.toChat(): Chat = Chat(
-        id = id,
-        participants = ContactList(participants.map { it.toContact() }),
-        messages = MessageList(messages.map { it.toMessage() })
-    )
-
-     */
     @TypeConverter
     fun detailsToMessage(m: MessageDetails): Message {
         with(m) {

@@ -3,7 +3,6 @@ package com.example.dchat.data
 import android.content.Context
 import com.example.dchat.data.repositories.ChatsRepository
 import com.example.dchat.data.repositories.impl.ChatsRepositoryImpl
-import kotlinx.coroutines.currentCoroutineContext
 
 /**
  * App container for Dependency injection.
