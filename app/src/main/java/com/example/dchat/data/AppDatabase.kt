@@ -1,20 +1,15 @@
 package com.example.dchat.data
 
 import android.content.Context
-import androidx.lifecycle.ViewModelProvider.NewInstanceFactory.Companion.instance
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.dchat.DChatApplication
 import com.example.dchat.data.dao.ChatDao
 import com.example.dchat.data.entities.Chat
 import com.example.dchat.data.entities.Contact
 import com.example.dchat.data.entities.Message
 import com.example.dchat.util.Converters
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlin.coroutines.coroutineContext
 
 /**
  *  The database serves as the central storage for chat data, persisting and retrieving
