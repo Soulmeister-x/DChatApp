@@ -36,6 +36,11 @@ class ChatsRepositoryImpl(
     override suspend fun insertAllMessages(messages: List<Message>) =
         messageDao.insertAllMessages(messages)
 
+    override suspend fun deleteAllChats() {
+        messageDao.deleteAllMessages()
+        chatDao.deleteAllChats()
+    }
+
     override suspend fun deleteChatById(chatId: Int) {
         messageDao.deleteMessagesByChatId(chatId)
         chatDao.deleteChatById(chatId)

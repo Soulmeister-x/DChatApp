@@ -11,6 +11,7 @@ interface ChatsRepository {
     fun getChatById(chatId: Int): Flow<Chat>
     suspend fun updateMessages(messages: List<Message>)
     suspend fun insertAllMessages(messages: List<Message>)
+    suspend fun deleteAllChats()
     suspend fun deleteChatById(chatId: Int)
     suspend fun deleteMessage(message: Message)
 }

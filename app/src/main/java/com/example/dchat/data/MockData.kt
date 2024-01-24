@@ -14,7 +14,7 @@ val cTest = Contact(99, "X099", "TEST Name")
 
 //region messages
 val m00 = Message(
-    id = 99,
+    id = 9900,
     chatId = 99,
     content = "TEST TEST TEST",
     senderId = cTest.id,
@@ -23,7 +23,7 @@ val m00 = Message(
 )
 
 val m01 = Message(
-    id = 99,
+    id = 9901,
     chatId = 99,
     content = "user TEST TEST TEST",
     senderId = user.id,
