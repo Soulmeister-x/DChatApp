@@ -1,17 +1,17 @@
-package com.example.dchat.db.entities
+package com.example.dchat.data.entities
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import java.sql.Timestamp
 
-@Entity
+
+@Entity(tableName = "messages")
 data class Message(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val chatId: Int,
     val content: String,
     val senderId: Int,
     val recipientId: Int,
-    val timestamp: Timestamp,
-)
+    val timestamp: String,
+) {
+    fun isSender(): Boolean = this.senderId == 0
+}
