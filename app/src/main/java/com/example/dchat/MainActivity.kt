@@ -1,7 +1,6 @@
 package com.example.dchat
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,14 +9,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.dchat.data.AppDataContainer
 import com.example.dchat.data.AppDatabase
-import com.example.dchat.data.dao.ChatDao
+import com.example.dchat.data.dao.MessageDao
 import com.example.dchat.ui.MyAppNavHost
 import com.example.dchat.ui.theme.DChatTheme
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var appDb: AppDatabase
-    private lateinit var appDao: ChatDao
+    private lateinit var appDao: MessageDao
     private lateinit var appDataContainer: AppDataContainer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

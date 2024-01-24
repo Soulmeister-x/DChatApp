@@ -117,7 +117,6 @@ val mockContacts = listOf<Contact>(c3,c1,c2)
 
 val testChat = Chat(
     id = 99,
-    messages = listOf(m00, m01, m00),
     participants = listOf(cTest, user),
 )
 
@@ -126,16 +125,18 @@ val mockChats = listOf<Chat>(
     Chat(
         0,
         listOf(user, c1),
-        listOf(m1, m2, m3)
     ),
     Chat(
         1,
         listOf(user, c2),
-        listOf(m4, m5, m6)
     ),
     Chat(
         2,
         listOf(user, c3),
-        listOf(m7, m8, m9)
     ),
+)
+
+
+val mockMessages = listOf<Message>(
+    m00,m01,m1,m2,m3,m4,m5,m6,m7,m8,m9
 )

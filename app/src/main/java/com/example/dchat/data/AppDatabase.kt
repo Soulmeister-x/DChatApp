@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.dchat.data.dao.ChatDao
+import com.example.dchat.data.dao.MessageDao
 import com.example.dchat.data.entities.Chat
 import com.example.dchat.data.entities.Contact
 import com.example.dchat.data.entities.Message
@@ -19,7 +19,7 @@ import com.example.dchat.util.Converters
 @Database(entities = [Chat::class, Contact::class, Message::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun chatDao(): ChatDao
+    abstract fun chatDao(): MessageDao
 
     companion object {
         @Volatile

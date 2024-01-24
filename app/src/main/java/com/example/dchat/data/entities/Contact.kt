@@ -5,6 +5,12 @@ import androidx.room.PrimaryKey
 import com.example.dchat.data.cTest
 import com.example.dchat.data.user
 
+/**
+ * The [Contact] data class describes the structure of a contact.
+ * @property id the internal id of this contact
+ * @property code a code that identifies the user to other users
+ * @property name the name to be displayed
+ */
 @Entity(tableName = "contacts")
 data class Contact(
     @PrimaryKey val id: Int,
