@@ -16,7 +16,6 @@ import com.example.dchat.ui.theme.DChatTheme
 
 class MainActivity : ComponentActivity() {
     private lateinit var appDb: AppDatabase
-    private lateinit var appDao: MessageDao
     private lateinit var appDataContainer: AppDataContainer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
