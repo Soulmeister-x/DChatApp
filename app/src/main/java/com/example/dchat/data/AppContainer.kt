@@ -2,7 +2,7 @@ package com.example.dchat.data
 
 import android.content.Context
 import com.example.dchat.data.repositories.ChatsRepository
-import com.example.dchat.data.repositories.impl.ChatsRepositoryImpl
+import com.example.dchat.data.repositories.ChatsRepositoryImpl
 
 /**
  * App container for Dependency injection.
@@ -14,7 +14,7 @@ interface AppContainer {
 /**
  * [AppContainer] implementation that provides instance of [ChatsRepositoryImpl].
  */
-class AppDataContainer(private val context: Context) : AppContainer {
+class AppDataContainer(context: Context) : AppContainer {
 
     private val appDb = AppDatabase.getInstance(context)
     /**
