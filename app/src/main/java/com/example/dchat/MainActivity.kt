@@ -9,9 +9,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.dchat.data.AppDataContainer
 import com.example.dchat.data.AppDatabase
-import com.example.dchat.data.dao.MessageDao
 import com.example.dchat.ui.MyAppNavHost
 import com.example.dchat.ui.theme.DChatTheme
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -22,14 +22,16 @@ class MainActivity : ComponentActivity() {
 
         appDataContainer = AppDataContainer(applicationContext)
         appDb = AppDatabase.getInstance(applicationContext)
-        val viewModel = ChatViewModel(appDataContainer)
+        //val viewModel = ChatViewModel(appDataContainer)
+        //val viewModel : ChatViewModel by inject<ChatViewModel>()
+        //val viewModel: ChatViewModel = getViewModel<ChatViewModel>()
+        //val viewModel: ChatViewModel by viewModels()
+
+        val viewModel: ChatViewModel = getViewModel()
 
         // update uiState
         viewModel.fetchAllChats()
 
-        //val viewModel : ChatViewModel by inject<ChatViewModel>()
-        //val viewModel: ChatViewModel = getViewModel<ChatViewModel>()
-        //val viewModel: ChatViewModel by viewModels()
 
         setContent {
             DChatTheme {

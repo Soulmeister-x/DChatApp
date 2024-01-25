@@ -128,6 +128,9 @@ data class UiState(
         this.chatDetailsList.map { chat ->
             ChatPreview(chat.id, chat.content)
         }
+
+    fun getChatIds(): List<Int> =
+        this.chatDetailsList.map { it.chatId }.distinct()
 }
 
 //region Details data classes
