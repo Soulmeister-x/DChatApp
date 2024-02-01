@@ -2,6 +2,8 @@ package com.example.dchat.data.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.sql.Timestamp
+import java.util.Calendar
 
 /**
  * The [Message] data class represents a message, that belongs to a [Chat].
@@ -18,10 +20,16 @@ data class Message(
     val chatId: Int,
     val content: String,
     val senderId: Int,
-    val recipientId: Int,
     val timestamp: String,
 ) {
     fun isSender(): Boolean = this.senderId == 0
 
-    constructor() : this(0,0,"",0,0,"")
+    constructor() : this(0,0,"",0, getCurrentTimeStamp())
+    constructor(chatId: Int,content: String,senderId: Int,recipientId: Int):
+            this(0,chatId,content,senderId, getCurrentTimeStamp())
+    constructor(chatId: Int, content: String): this(0,chatId, content, 0, getCurrentTimeStamp())
 }
+
+
+private fun getCurrentTimeStamp(): String =
+    Timestamp(Calendar.getInstance().timeInMillis).toString()

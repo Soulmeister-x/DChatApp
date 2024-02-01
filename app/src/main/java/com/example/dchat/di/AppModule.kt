@@ -1,17 +1,33 @@
 package com.example.dchat.di
 
-import org.koin.androidx.viewmodel.dsl.viewModelOf
-import org.koin.dsl.module
-import com.example.dchat.ChatViewModel
-import org.koin.core.module.dsl.singleOf
-import com.example.dchat.data.repositories.ChatsRepository
-import com.example.dchat.data.repositories.ChatsRepositoryImpl
-import org.koin.dsl.bind
+import androidx.room.Room
+import com.example.dchat.data.AppContainer
 import com.example.dchat.data.AppDataContainer
+import com.example.dchat.data.AppDatabase
+import com.example.dchat.network.ChatsRepository
+import com.example.dchat.network.ChatsRepositoryImpl
+import com.example.dchat.ui.ChatsUiState
+import com.example.dchat.ui.ChatsViewModel
+import org.koin.android.ext.koin.androidApplication
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
 
 val appModule = module {
-    viewModelOf(::ChatViewModel)
+    singleOf(::AppDataContainer) { bind<AppContainer>() }
 
-    singleOf(::AppDataContainer)
-    singleOf(::ChatsRepositoryImpl) bind ChatsRepository::class
+    single<ChatsRepository> { ChatsRepositoryImpl() }
+
+    single {
+        Room.databaseBuilder(
+        androidApplication(),
+        AppDatabase::class.java,
+        "appDb"
+        ).build()
+    }
+
+    factory { ChatsUiState(get()) }
+
+    viewModel { ChatsViewModel(get()) }
 }

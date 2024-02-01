@@ -10,8 +10,24 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MessageDao {
+
+    @Query("SELECT chatId FROM messages GROUP BY chatId")
+    fun getChatIds(): List<Int>
+
+    @Query("SELECT * FROM messages")
+    fun getAllMessages(): Flow<List<Message>>
+
     @Query("SELECT * FROM messages ORDER BY chatId")
     fun getAllMessagesSortedByChatId(): Flow<List<Message>>
+
+    @Query("SELECT DISTINCT chatId FROM messages")
+    fun getAllChatIds(): Flow<List<Int>>
+
+    @Query("SELECT * FROM messages " +
+            "WHERE chatId = :chatId " +
+            "ORDER BY id DESC " +
+            "LIMIT 1")
+    fun getLastMessageByChatId(chatId: Int): Flow<Message>
 
     @Query("SELECT * FROM messages WHERE id = :chatId")
     fun getMessagesByChatId(chatId: Int): Flow<List<Message>>
@@ -24,6 +40,12 @@ interface MessageDao {
 
     @Insert
     suspend fun insertAllMessages(chats: List<Message>)
+
+    @Upsert
+    suspend fun upsertMessages(messages: List<Message>)
+
+    @Insert
+    suspend fun insertMessage(msg: Message)
 
     @Query("DELETE FROM messages")
     suspend fun deleteAllMessages()
