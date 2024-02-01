@@ -13,7 +13,7 @@ import com.example.dchat.ui.theme.DChatTheme
 fun MessageList(messages: List<Message>) {
     Column(modifier = Modifier.fillMaxWidth()) {
         messages.forEach { msg ->
-            MessageItem(msg)
+            MessageListItem(msg)
         }
     }
 }

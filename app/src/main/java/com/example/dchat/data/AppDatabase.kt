@@ -1,14 +1,10 @@
 package com.example.dchat.data
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.dchat.data.dao.ChatDao
 import com.example.dchat.data.dao.ContactDao
 import com.example.dchat.data.dao.MessageDao
-import com.example.dchat.data.entities.Chat
 import com.example.dchat.data.entities.Contact
 import com.example.dchat.data.entities.Message
 import com.example.dchat.util.Converters
@@ -18,28 +14,9 @@ import com.example.dchat.util.Converters
  *  chat information. It provides a persistent data layer that ensures data integrity and
  *  availability even when the app is not running.
  */
-@Database(entities = [Chat::class, Contact::class, Message::class], version = 1, exportSchema = false)
+@Database(entities = [Contact::class, Message::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun messageDao(): MessageDao
-    abstract fun chatDao(): ChatDao
     abstract fun contactDao(): ContactDao
-
-    companion object {
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
-
-        fun getInstance(context: Context): AppDatabase {
-
-            return INSTANCE ?: synchronized(this) {
-                Room.databaseBuilder(
-                    context,
-                    AppDatabase::class.java,
-                    "appDb"
-                )
-                    .build()
-                    .also { INSTANCE = it }
-            }
-        }
-    }
 }

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.example.dchat.data.entities.Message
 
 @Composable
-fun MessageItem(msg: Message) {
+fun MessageListItem(msg: Message) {
     val c = if (msg.isSender()) Color.Cyan else Color.Gray
     val arrangement = if (msg.isSender()) Arrangement.End else Arrangement.Start
     Row(

@@ -1,29 +1,27 @@
 package com.example.dchat.data
 
-import android.content.Context
-import com.example.dchat.data.repositories.ChatsRepository
-import com.example.dchat.data.repositories.ChatsRepositoryImpl
+import com.example.dchat.network.ChatsRepository
+import com.example.dchat.network.ChatsRepositoryImpl
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 /**
  * App container for Dependency injection.
  */
-interface AppContainer {
+interface AppContainer : KoinComponent {
+    val appDb: AppDatabase
     val chatsRepository: ChatsRepository
 }
 
 /**
  * [AppContainer] implementation that provides instance of [ChatsRepositoryImpl].
  */
-class AppDataContainer(context: Context) : AppContainer {
+class AppDataContainer : AppContainer {
 
-    private val appDb = AppDatabase.getInstance(context)
+    override val appDb: AppDatabase by inject()
+
     /**
      * Implementation for [ChatsRepository].
      */
-    override val chatsRepository: ChatsRepository by lazy {
-        ChatsRepositoryImpl(
-            appDb.messageDao(),
-            appDb.chatDao()
-        )
-    }
+    override val chatsRepository: ChatsRepository by inject()
 }
