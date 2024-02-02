@@ -24,7 +24,9 @@ val appModule = module {
         androidApplication(),
         AppDatabase::class.java,
         "appDb"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     factory { ChatsUiState(get()) }

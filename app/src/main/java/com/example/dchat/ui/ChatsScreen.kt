@@ -64,10 +64,9 @@ fun ChatsList(
     onChatClick: (Int) -> Unit,
     paddingValues: PaddingValues
 ) {
-    val scrollState: ScrollState = rememberScrollState()
     Column(
         modifier = Modifier
-            .verticalScroll(scrollState)
+            .verticalScroll(rememberScrollState())
             .padding(paddingValues = paddingValues),
     ) {
         chatList.forEach{ message ->
