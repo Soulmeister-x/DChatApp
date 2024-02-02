@@ -1,6 +1,5 @@
 package com.example.dchat.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dchat.data.entities.Message
@@ -79,7 +78,7 @@ data class ChatsUiState(val chats: List<Message>) {
         val chatIds = getAllChatIds()
         val ret = mutableListOf<Message>()
         chatIds.forEach { chatId ->
-            ret.add(chats.filter { chatId == it.chatId }.last())
+            ret.add(chats.last { chatId == it.chatId })
         }
         return ret
     }

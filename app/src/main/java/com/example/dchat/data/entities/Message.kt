@@ -6,12 +6,11 @@ import java.sql.Timestamp
 import java.util.Calendar
 
 /**
- * The [Message] data class represents a message, that belongs to a [Chat].
+ * The [Message] data class represents a message.
  * @property id the internal id of this message
  * @property chatId the id of the chat, that this message belongs to
  * @property content a string representation of the content
  * @property senderId the id of the sender
- * @property recipientId the id of the recipient
  * @property timestamp a string representation of the time and date, when this message was sent
  */
 @Entity(tableName = "messages")
@@ -25,7 +24,7 @@ data class Message(
     fun isSender(): Boolean = this.senderId == 0
 
     constructor() : this(0,0,"",0, getCurrentTimeStamp())
-    constructor(chatId: Int,content: String,senderId: Int,recipientId: Int):
+    constructor(chatId: Int,content: String,senderId: Int):
             this(0,chatId,content,senderId, getCurrentTimeStamp())
     constructor(chatId: Int, content: String): this(0,chatId, content, 0, getCurrentTimeStamp())
 }

@@ -28,7 +28,6 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ChatsScreen(
-    modifier: Modifier = Modifier,
     onNavigateToChat: (Int) -> Unit,
     viewModel: ChatsViewModel = koinViewModel()
 ) {
@@ -43,7 +42,6 @@ fun ChatsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatsScreen(
-    modifier: Modifier = Modifier,
     chatsUiState: ChatsUiState,
     onChatClick: (Int) -> Unit
 ) {
@@ -124,7 +122,6 @@ fun ChatsListEntry(
 @Composable
 fun PreviewChatsScreen() {
     ChatsScreen(
-        modifier = Modifier,
         chatsUiState = ChatsUiState(mockMessages),
         onChatClick = {}
     )
