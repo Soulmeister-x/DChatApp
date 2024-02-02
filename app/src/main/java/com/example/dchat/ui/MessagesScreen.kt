@@ -1,6 +1,5 @@
 package com.example.dchat.ui
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -52,7 +51,7 @@ fun MessagesScreen(
     sendMessage: (Message) -> Unit
 ) {
     var inputText by remember { mutableStateOf("") }
-    val scrollState: ScrollState = rememberScrollState()
+    val scrollState = rememberScrollState()
 
     Scaffold(topBar = {
         Row(modifier = Modifier.fillMaxWidth(),
