@@ -4,9 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -33,7 +35,7 @@ fun MessagesScreen(
         navController = navController,
         chatId = chatId,
         messages = messages,
-        sendMessage = viewModel::insertMessage
+        sendMessage = viewModel::insertMessage,
     )
 }
 
@@ -46,28 +48,35 @@ fun MessagesScreen(
     sendMessage: (Message) -> Unit
 ) {
     var inputText by remember { mutableStateOf("") }
-    Column(
-        modifier = Modifier
-            .fillMaxHeight(),
-        verticalArrangement = Arrangement.Bottom
-    ) {
+
+    Scaffold(topBar = {
         Button(onClick = { navController.popBackStack() }) {
             Text(text = "Zurück zu Chats")
         }
-        if (chatId == null) {
-            Column {
-                Text(text = "Mocked data, because chatId == null", style = MaterialTheme.typography.headlineMedium)
-                MessageList(mockMessages)
-            }
-        } else {
-            MessageList(messages = messages)
-            Row {
-                TextField(value = inputText, onValueChange = { inputText = it })
-                Button(
-                    onClick = { sendMessage.invoke(Message(chatId, inputText)) }
-                    //{ sendMessage(message) }
-                ) {
-                    Text("SEND")
+    }) {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(it),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            if (chatId == null) {
+                Column {
+                    Text(text = "Mocked data, because chatId == null", style = MaterialTheme.typography.headlineMedium)
+                    MessageList(mockMessages)
+                }
+            } else {
+                MessageList(messages = messages)
+                Row {
+                    TextField(value = inputText, onValueChange = { inputText = it })
+                    Button(
+                        onClick = {
+                            sendMessage.invoke(Message(chatId, inputText))
+                            inputText = ""
+                        }
+                    ) {
+                        Text("SEND")
+                    }
                 }
             }
         }
