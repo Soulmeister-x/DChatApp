@@ -39,6 +39,12 @@ class ChatsViewModel(
         }
     }
 
+    fun deleteMessage(message: Message) {
+        viewModelScope.launch {
+            chatsRepository.deleteMessage(message)
+        }
+    }
+
     fun getAllChatsPreview(): List<Message> {
         val chatIds = chatsRepository.getAllChatIdsINSTANT()
         val chatList: MutableList<Message> = mutableListOf()

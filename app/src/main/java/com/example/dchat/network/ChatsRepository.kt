@@ -16,6 +16,7 @@ interface ChatsRepository : KoinComponent {
     suspend fun getAllMessagesByChatId(chatId: Int): Flow<List<Message>>
     suspend fun upsertMessages(messages: List<Message>)
     suspend fun insertMessage(message: Message)
+    suspend fun deleteMessage(message: Message)
 }
 /*
     suspend fun deleteAllChats()
@@ -74,6 +75,10 @@ class ChatsRepositoryImpl : ChatsRepository {
 
     override suspend fun insertMessage(message: Message) {
         messageDao.insertMessage(message)
+    }
+
+    override suspend fun deleteMessage(message: Message) {
+        messageDao.deleteMessage(message)
     }
 
 

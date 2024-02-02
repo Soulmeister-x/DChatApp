@@ -39,6 +39,7 @@ fun MessagesScreen(
         chatId = chatId,
         messages = messages,
         sendMessage = viewModel::insertMessage,
+        deleteMessage = viewModel::deleteMessage
     )
 }
 
@@ -48,7 +49,8 @@ fun MessagesScreen(
     navController: NavHostController,
     chatId: Int?,
     messages: List<Message>,
-    sendMessage: (Message) -> Unit
+    sendMessage: (Message) -> Unit,
+    deleteMessage: (Message) -> Unit
 ) {
     var inputText by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
@@ -86,10 +88,10 @@ fun MessagesScreen(
             if (chatId == null) {
                 Column {
                     Text(text = "Mocked data, because chatId == null", style = MaterialTheme.typography.headlineMedium)
-                    MessageList(mockMessages)
+                    MessageList(mockMessages,{})
                 }
             } else {
-                MessageList(messages = messages)
+                MessageList(messages = messages, deleteMessage = deleteMessage)
             }
         }
     }
