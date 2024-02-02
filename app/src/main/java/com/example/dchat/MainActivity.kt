@@ -9,8 +9,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.dchat.data.mockContacts
 import com.example.dchat.data.mockMessages
 import com.example.dchat.ui.ChatsViewModel
+import com.example.dchat.ui.ContactsViewModel
 import com.example.dchat.ui.MyAppNavHost
 import com.example.dchat.ui.theme.DChatTheme
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -21,8 +23,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val viewModel: ChatsViewModel = getViewModel()
-        viewModel.upsertMessages(mockMessages)
+        // add mock data
+        val chatsViewModel: ChatsViewModel = getViewModel()
+        chatsViewModel.upsertMessages(mockMessages)
+        val contactsViewModel: ContactsViewModel = getViewModel()
+        contactsViewModel.upsertContacts(mockContacts)
 
         setContent {
             navController = rememberNavController()

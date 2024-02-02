@@ -22,6 +22,7 @@ fun MyAppNavHost(
     ) {
         composable("chats") {
             ChatsScreen(
+                navController = navController,
                 onNavigateToChat = { chatId -> navController.navigate("chats/$chatId") },
             )
         }
@@ -32,6 +33,14 @@ fun MyAppNavHost(
             MessagesScreen(
                 navController = navController,
                 chatId = backStackEntry.arguments?.getInt("chatId"),
+            )
+        }
+        composable(
+            route = "contacts"
+        ) {
+            ContactsScreen(
+                navController = navController,
+                onContactSelected = { chatId -> navController.navigate("chats/$chatId") }
             )
         }
     }

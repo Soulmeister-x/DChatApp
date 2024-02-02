@@ -3,6 +3,7 @@ package com.example.dchat.network
 import com.example.dchat.data.AppDataContainer
 import com.example.dchat.data.dao.ContactDao
 import com.example.dchat.data.dao.MessageDao
+import com.example.dchat.data.entities.Contact
 import com.example.dchat.data.entities.Message
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.component.KoinComponent
@@ -17,6 +18,8 @@ interface ChatsRepository : KoinComponent {
     suspend fun upsertMessages(messages: List<Message>)
     suspend fun insertMessage(message: Message)
     suspend fun deleteMessage(message: Message)
+    suspend fun getAllContacts(): Flow<List<Contact>>
+    suspend fun upsertContacts(contacts: List<Contact>)
 }
 /*
     suspend fun deleteAllChats()
@@ -79,6 +82,16 @@ class ChatsRepositoryImpl : ChatsRepository {
 
     override suspend fun deleteMessage(message: Message) {
         messageDao.deleteMessage(message)
+    }
+
+    override suspend fun getAllContacts(): Flow<List<Contact>> {
+        return contactDao.getAllContacts()
+    }
+
+    override suspend fun upsertContacts(contacts: List<Contact>) {
+        contacts.forEach {
+            contactDao.upsertContact(it)
+        }
     }
 
 

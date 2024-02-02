@@ -1,6 +1,5 @@
 package com.example.dchat.ui
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,12 +22,14 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.example.dchat.data.entities.Message
 import com.example.dchat.data.mockMessages
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ChatsScreen(
+    navController: NavHostController,
     onNavigateToChat: (Int) -> Unit,
     viewModel: ChatsViewModel = koinViewModel()
 ) {
@@ -35,7 +37,8 @@ fun ChatsScreen(
     val chats = uiState.getAllChatPreviews()
     ChatsScreen(
         chatsUiState = ChatsUiState(chats),
-        onChatClick = onNavigateToChat
+        onChatClick = onNavigateToChat,
+        startChatFromContacts = { navController.navigate("contacts") }
     )
 }
 
@@ -43,7 +46,8 @@ fun ChatsScreen(
 @Composable
 fun ChatsScreen(
     chatsUiState: ChatsUiState,
-    onChatClick: (Int) -> Unit
+    onChatClick: (Int) -> Unit,
+    startChatFromContacts: () -> Unit,
 ) {
     Scaffold(
         topBar = { DChatAppBar() },
@@ -53,7 +57,12 @@ fun ChatsScreen(
                 onChatClick = onChatClick,
                 paddingValues = it
             )
-        }
+        },
+        floatingActionButton = { FloatingActionButton(
+            onClick = startChatFromContacts
+        ) {
+            Text(text = "+")
+        } }
     )
 }
 
@@ -122,6 +131,7 @@ fun ChatsListEntry(
 fun PreviewChatsScreen() {
     ChatsScreen(
         chatsUiState = ChatsUiState(mockMessages),
-        onChatClick = {}
+        onChatClick = {},
+        startChatFromContacts = {}
     )
 }

@@ -63,15 +63,15 @@ fun MessageListItem(
                 .padding(6.dp)
                 .shadow(elevation = 4.dp)
                 .background(color = c)
+                .combinedClickable(
+                    onClick = {},
+                    onLongClick = { onLongClick?.invoke(msg) },
+                    onDoubleClick = {}
+                )
         ) {
             Text(
                 text = msg.content,
                 modifier = Modifier
-                    .combinedClickable(
-                        onClick = {},
-                        onLongClick = { onLongClick?.invoke(msg) },
-                        onDoubleClick = {}
-                    )
                     .padding(8.dp)
             )
         }
