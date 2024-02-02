@@ -1,10 +1,15 @@
 package com.example.dchat.ui
 
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -48,16 +53,36 @@ fun MessagesScreen(
     sendMessage: (Message) -> Unit
 ) {
     var inputText by remember { mutableStateOf("") }
+    val scrollState: ScrollState = rememberScrollState()
 
     Scaffold(topBar = {
-        Button(onClick = { navController.popBackStack() }) {
-            Text(text = "Zurück zu Chats")
+        Row(modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Absolute.SpaceBetween) {
+            Button(onClick = { navController.popBackStack() }) {
+                Text(text = "Zurück zu Chats")
+            }
+            Text(text = "chatId: $chatId")
         }
-    }) {
+    },
+        bottomBar = {Row {
+            TextField(value = inputText, onValueChange = { inputText = it })
+            Button(
+                onClick = {
+                    if (chatId != null) {
+                        sendMessage.invoke(Message(chatId, inputText))
+                        inputText = ""
+                    }
+                }
+            ) {
+                Text("SEND")
+            }
+        }}
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(it),
+                .padding(it)
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.Bottom
         ) {
             if (chatId == null) {
@@ -67,17 +92,6 @@ fun MessagesScreen(
                 }
             } else {
                 MessageList(messages = messages)
-                Row {
-                    TextField(value = inputText, onValueChange = { inputText = it })
-                    Button(
-                        onClick = {
-                            sendMessage.invoke(Message(chatId, inputText))
-                            inputText = ""
-                        }
-                    ) {
-                        Text("SEND")
-                    }
-                }
             }
         }
     }
