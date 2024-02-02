@@ -33,7 +33,7 @@ fun ChatsScreen(
     viewModel: ChatsViewModel = koinViewModel()
 ) {
     val uiState by viewModel.chats.collectAsStateWithLifecycle()
-    val chats = uiState.chats
+    val chats = uiState.getAllChatPreviews()
     ChatsScreen(
         chatsUiState = ChatsUiState(chats),
         onChatClick = onNavigateToChat
@@ -49,7 +49,13 @@ fun ChatsScreen(
 ) {
     Scaffold(
         topBar = { DChatAppBar() },
-        content = { ChatsList(chatList = chatsUiState.chats, onChatClick = onChatClick, paddingValues = it) }
+        content = {
+            ChatsList(
+                chatList = chatsUiState.chats,
+                onChatClick = onChatClick,
+                paddingValues = it
+            )
+        }
     )
 }
 
@@ -90,6 +96,10 @@ fun ChatsListEntry(
         // Content of each chat item
         Row {
             Column(modifier = Modifier.weight(0.8F)) {
+                Text(
+                    text = "chatId: ${message.chatId}",
+                    style = MaterialTheme.typography.labelSmall
+                )
                 Text(
                     text = message.content,
                     style = MaterialTheme.typography.bodyMedium,
