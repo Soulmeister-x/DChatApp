@@ -5,7 +5,7 @@ import com.example.dchat.ui.ChatsUiState
 import org.junit.Test
 
 class ChatsUiStateTest {
-    val testState = ChatsUiState(
+    private val testState = ChatsUiState(
         listOf(
             Message(1,"msg 1 from chat 1"),
             Message(1,"msg 2 from chat 1"),

@@ -43,8 +43,8 @@ interface ChatsRepository : KoinComponent {
 class ChatsRepositoryImpl : ChatsRepository {
 
     private val appDataContainer: AppDataContainer by inject()
-    val messageDao: MessageDao = appDataContainer.appDb.messageDao()
-    val contactDao: ContactDao = appDataContainer.appDb.contactDao()
+    private val messageDao: MessageDao = appDataContainer.appDb.messageDao()
+    private val contactDao: ContactDao = appDataContainer.appDb.contactDao()
 
 
     override fun getAllChatIdsINSTANT(): List<Int> {

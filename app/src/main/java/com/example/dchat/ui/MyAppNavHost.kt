@@ -22,7 +22,6 @@ fun MyAppNavHost(
     ) {
         composable("chats") {
             ChatsScreen(
-                modifier = modifier,
                 onNavigateToChat = { chatId -> navController.navigate("chats/$chatId") },
             )
         }

@@ -6,7 +6,7 @@ import java.sql.Timestamp
 
 val user = Contact(0, "X000", "Main User")
 
-val c1 = Contact(1, "X001", "Simone Malzahn")
+val c1 = Contact(1, "X001", "Simone Maccaroni")
 val c2 = Contact(2, "X002", "Joschka Kakadu")
 val c3 = Contact(3, "X003", "Peter Müller")
 val cTest = Contact(99, "X099", "TEST Name")
@@ -101,9 +101,9 @@ val m9 = Message(
 )
 //endregion
 
-val mockContacts = listOf<Contact>(c3,c1,c2)
+val mockContacts = listOf(c3,c1,c2)
 
 
-val mockMessages = listOf<Message>(
+val mockMessages = listOf(
     m00,m01,m1,m2,m3,m4,m5,m6,m7,m8,m9
 )
