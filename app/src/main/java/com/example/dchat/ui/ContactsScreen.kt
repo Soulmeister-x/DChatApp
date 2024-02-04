@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -114,11 +115,24 @@ fun ContactsListItem(
         border = BorderStroke(1.dp, Color.Black)
     ) {
         // Content of each chat item
-        Row {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .height(60.dp)
+                .padding(
+                    vertical = 10.dp,
+                    horizontal = 8.dp)
+        ) {
             Text(
-                text = "id: ${contact.id} | ${contact.name}",
+                text = "id: ${contact.id}",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+            )
+            Text(
+                text = contact.name,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier
+                    .padding(horizontal = 8.dp, vertical = 8.dp)
             )
         }
     }
