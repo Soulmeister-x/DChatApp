@@ -1,11 +1,11 @@
 package com.example.dchat
 
 import com.example.dchat.data.entities.Message
-import com.example.dchat.ui.ChatsUiState
+import com.example.dchat.ui.MessagesUiState
 import org.junit.Test
 
-class ChatsUiStateTest {
-    private val testState = ChatsUiState(
+class MessagesUiStateTest {
+    private val testState = MessagesUiState(
         listOf(
             Message(1,"msg 1 from chat 1"),
             Message(1,"msg 2 from chat 1"),
@@ -23,8 +23,8 @@ class ChatsUiStateTest {
         assert(testState.getAllChatIds().size > 1)
 
         // assert that the result only contains messages with chatId 2
-        val filteredMessagesState = ChatsUiState(testState.getMessagesByChatId(testChatId))
-        assert(filteredMessagesState.chats.size == 2)
+        val filteredMessagesState = MessagesUiState(testState.getMessagesByChatId(testChatId))
+        assert(filteredMessagesState.messages.size == 2)
 
         val filteredChatIds = filteredMessagesState.getAllChatIds()
         assert(filteredChatIds.size == 1)

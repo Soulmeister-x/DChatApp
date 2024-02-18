@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.example.dchat.data.entities.Contact
+import com.example.dchat.data.mockChats
 import com.example.dchat.data.mockContacts
 import org.koin.androidx.compose.koinViewModel
 
@@ -34,12 +35,15 @@ import org.koin.androidx.compose.koinViewModel
 fun ContactsScreen(
     navController: NavHostController,
     onContactSelected: ((Int) -> Unit)?,
-    viewModel: ContactsViewModel = koinViewModel()
+    contactsViewModel: ContactsViewModel = koinViewModel(),
+    chatsViewModel: ChatsViewModel = koinViewModel()
 ) {
-    val contactsUiState = viewModel.contacts.collectAsStateWithLifecycle()
+    val contactsUiState = contactsViewModel.contacts.collectAsStateWithLifecycle()
+    val chatsUiState = chatsViewModel.chats.collectAsStateWithLifecycle()
     ContactsScreen(
         navigateBack = { navController.popBackStack() },
         contactsUiState = contactsUiState.value,
+        chatsUiState = chatsUiState.value,
         onContactSelected = onContactSelected
     )
 }
@@ -49,6 +53,7 @@ fun ContactsScreen(
 fun ContactsScreen(
     navigateBack: (() -> Unit)?,
     contactsUiState: ContactsUiState,
+    chatsUiState: ChatsUiState,
     onContactSelected: ((Int) -> Unit)?,
 ) {
     val contacts = contactsUiState.contacts
@@ -69,6 +74,7 @@ fun ContactsScreen(
         ) {
             ContactsList(
                 contacts = contacts,
+                chatsUiState = chatsUiState,
                 navigateToChatWithContact = onContactSelected
             )
         }
@@ -78,6 +84,7 @@ fun ContactsScreen(
 @Composable
 fun ContactsList(
     contacts: List<Contact>,
+    chatsUiState: ChatsUiState,
     navigateToChatWithContact: ((Int) -> Unit)?,
 ) {
     Column(
@@ -89,7 +96,8 @@ fun ContactsList(
             ContactsListItem(
                 contact = it,
                 onContactClick = {
-                    //navigateToChatWithContact?.invoke(it.id)
+                    val chatId = chatsUiState.findChatIdForContact(it)
+                    navigateToChatWithContact?.invoke(chatId)
                 }
             )
         }
@@ -107,7 +115,7 @@ fun ContactsListItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .shadow(12.dp,cornerShape)
+            .shadow(12.dp, cornerShape)
             .clickable {
                 // Handle click on chat item
                 onContactClick?.invoke(contact)
@@ -121,10 +129,11 @@ fun ContactsListItem(
                 .height(60.dp)
                 .padding(
                     vertical = 10.dp,
-                    horizontal = 8.dp)
+                    horizontal = 8.dp
+                )
         ) {
             Text(
-                text = "id: ${contact.id}",
+                text = "id: ${contact.contactId}",
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
             )
@@ -145,6 +154,7 @@ fun PreviewContactsList() {
     ContactsScreen(
         navigateBack = {},
         contactsUiState = ContactsUiState(mockContacts),
+        chatsUiState = ChatsUiState(mockChats),
         onContactSelected = {}
     )
 }

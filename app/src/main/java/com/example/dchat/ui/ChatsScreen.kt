@@ -1,5 +1,6 @@
 package com.example.dchat.ui
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,20 +24,34 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.example.dchat.data.entities.Chat
 import com.example.dchat.data.entities.Message
-import com.example.dchat.data.mockMessages
+import com.example.dchat.data.mockChatsWithPreviewMessage
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ChatsScreen(
     navController: NavHostController,
     onNavigateToChat: (Int) -> Unit,
-    viewModel: ChatsViewModel = koinViewModel()
-) {
-    val uiState by viewModel.chats.collectAsStateWithLifecycle()
-    val chats = uiState.getAllChatPreviews()
+    messagesViewModel: MessagesViewModel = koinViewModel(),
+    contactsViewModel: ContactsViewModel = koinViewModel(),
+    chatsViewModel: ChatsViewModel = koinViewModel()
+    ) {
+    val messagesUiState by messagesViewModel.chats.collectAsStateWithLifecycle()
+    //val contactsUiState by contactsViewModel.contacts.collectAsStateWithLifecycle()
+    val chatsUiState by chatsViewModel.chats.collectAsStateWithLifecycle()
+    val chats = chatsUiState.chats
+
+    val previewUiState = ChatsListUiState(
+        chats.associateWith { chat ->
+            val msg = messagesUiState.getPreviewMessageByChatId(chat.chatId) ?: Message()
+            Log.i("log","mapping $chat to $msg")
+            msg
+        }
+    )
+
     ChatsScreen(
-        chatsUiState = ChatsUiState(chats),
+        chatsListUiState = previewUiState,
         onChatClick = onNavigateToChat,
         startChatFromContacts = { navController.navigate("contacts") }
     )
@@ -45,7 +60,7 @@ fun ChatsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatsScreen(
-    chatsUiState: ChatsUiState,
+    chatsListUiState: ChatsListUiState,
     onChatClick: (Int) -> Unit,
     startChatFromContacts: () -> Unit,
 ) {
@@ -53,7 +68,7 @@ fun ChatsScreen(
         topBar = { DChatAppBar() },
         content = {
             ChatsList(
-                chatList = chatsUiState.chats,
+                chatListUiState = chatsListUiState,
                 onChatClick = onChatClick,
                 paddingValues = it
             )
@@ -66,10 +81,14 @@ fun ChatsScreen(
     )
 }
 
-
+/**
+ * A composable screen for displaying a list of chats
+ * for preview-purposes. Every entry should include
+ * [chatId],[contact.name],[messages.last],[timestamp]
+ */
 @Composable
 fun ChatsList(
-    chatList: List<Message>,
+    chatListUiState: ChatsListUiState,
     onChatClick: (Int) -> Unit,
     paddingValues: PaddingValues
 ) {
@@ -78,15 +97,20 @@ fun ChatsList(
             .verticalScroll(rememberScrollState())
             .padding(paddingValues = paddingValues),
     ) {
-        chatList.forEach{ message ->
-            ChatsListEntry(message = message, onChatClick = onChatClick)
+        chatListUiState.chats.forEach { (chat, message) ->
+            ChatsListEntry(message = message, chat.participants[0].name,onChatClick = onChatClick)
         }
     }
 }
 
+/**
+ * Single entry of [ChatsList], displaying:
+ * [chatId],[contact.name],[messages.last],[timestamp]
+ */
 @Composable
 fun ChatsListEntry(
     message: Message,
+    senderName: String,
     onChatClick: (Int) -> Unit
 ) {
     Card(
@@ -103,7 +127,7 @@ fun ChatsListEntry(
         Row {
             Column(modifier = Modifier.weight(0.8F)) {
                 Text(
-                    text = "chatId: ${message.chatId}",
+                    text = "chatId: ${message.chatId} | sender: $senderName",
                     style = MaterialTheme.typography.labelSmall
                 )
                 Text(
@@ -130,8 +154,15 @@ fun ChatsListEntry(
 @Composable
 fun PreviewChatsScreen() {
     ChatsScreen(
-        chatsUiState = ChatsUiState(mockMessages),
+        chatsListUiState = ChatsListUiState(mockChatsWithPreviewMessage),
         onChatClick = {},
         startChatFromContacts = {}
     )
 }
+
+/**
+ * A data class for associating a [Chat] with it's last [Message].
+ */
+data class ChatsListUiState(
+    val chats: Map<Chat,Message>
+)

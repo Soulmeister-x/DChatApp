@@ -9,12 +9,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.dchat.data.mockChats
 import com.example.dchat.data.mockContacts
 import com.example.dchat.data.mockMessages
 import com.example.dchat.ui.ChatsViewModel
+import com.example.dchat.ui.MessagesViewModel
 import com.example.dchat.ui.ContactsViewModel
 import com.example.dchat.ui.MyAppNavHost
 import com.example.dchat.ui.theme.DChatTheme
+import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
@@ -24,10 +27,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // add mock data
-        val chatsViewModel: ChatsViewModel = getViewModel()
-        chatsViewModel.upsertMessages(mockMessages)
+        val messagesViewModel: MessagesViewModel = getViewModel()
         val contactsViewModel: ContactsViewModel = getViewModel()
+        val chatsViewModel: ChatsViewModel = getViewModel()
+
+        chatsViewModel.nukeTable()
+
+        messagesViewModel.upsertMessages(mockMessages)
         contactsViewModel.upsertContacts(mockContacts)
+        chatsViewModel.upsertChats(mockChats)
 
         setContent {
             navController = rememberNavController()

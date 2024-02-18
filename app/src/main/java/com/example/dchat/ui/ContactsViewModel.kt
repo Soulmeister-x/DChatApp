@@ -3,7 +3,6 @@ package com.example.dchat.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.dchat.data.entities.Contact
-import com.example.dchat.data.entities.Message
 import com.example.dchat.network.ChatsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,13 +20,13 @@ class ContactsViewModel(
     val contacts = _contacts.asStateFlow()
 
     init {
-        loadContacts()
+        loadData()
     }
 
     /**
-     * This function loads the chat data from the database to [ChatsUiState].
+     * This function loads the chat data from the database to [MessagesUiState].
      */
-    private fun loadContacts() {
+    private fun loadData() {
         viewModelScope.launch {
             chatsRepository.getAllContacts()
                 .flowOn(Dispatchers.IO)

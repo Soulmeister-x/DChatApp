@@ -30,7 +30,7 @@ import org.koin.androidx.compose.koinViewModel
 fun MessagesScreen(
     navController: NavHostController,
     chatId: Int?,
-    viewModel: ChatsViewModel = koinViewModel()
+    viewModel: MessagesViewModel = koinViewModel()
 ) {
     val uiState by viewModel.chats.collectAsStateWithLifecycle()
     val messages = if(chatId != null) uiState.getMessagesByChatId(chatId) else listOf()

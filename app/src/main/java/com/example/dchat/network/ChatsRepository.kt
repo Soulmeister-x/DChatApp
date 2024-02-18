@@ -1,16 +1,17 @@
 package com.example.dchat.network
 
 import com.example.dchat.data.AppDataContainer
+import com.example.dchat.data.dao.ChatDao
 import com.example.dchat.data.dao.ContactDao
 import com.example.dchat.data.dao.MessageDao
 import com.example.dchat.data.entities.Contact
+import com.example.dchat.data.entities.Chat
 import com.example.dchat.data.entities.Message
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 interface ChatsRepository : KoinComponent {
-    fun getAllChatIdsINSTANT(): List<Int>
     suspend fun getAllChatIds(): Flow<List<Int>>
     suspend fun getAllMessages(): Flow<List<Message>>
     suspend fun getLastMessageByChatId(chatId: Int): Flow<Message>
@@ -20,23 +21,12 @@ interface ChatsRepository : KoinComponent {
     suspend fun deleteMessage(message: Message)
     suspend fun getAllContacts(): Flow<List<Contact>>
     suspend fun upsertContacts(contacts: List<Contact>)
-}
-/*
+    suspend fun getAllChats(): Flow<List<Chat>>
+    suspend fun upsertChat(chat: Chat)
+    suspend fun upsertChats(chats: List<Chat>)
+    suspend fun deleteChat(chat: Chat)
     suspend fun deleteAllChats()
-    fun getAllMessagesSortedByChatId(): Flow<List<Message>>
-    fun getAllChats(): Flow<List<Chat>>
-    fun getMessagesByChatId(chatId: Int): Flow<List<Message>>
-    fun getMessageById(messageId: Int): Flow<Message>
-    fun getChatById(chatId: Int): Flow<Chat>
-    suspend fun updateMessages(messages: List<Message>)
-    suspend fun insertMessage(message: Message)
-    suspend fun insertAllMessages(messages: List<Message>)
-    suspend fun deleteAllChats()
-    suspend fun deleteChatById(chatId: Int)
-    suspend fun deleteMessage(message: Message)
 }
-
- */
 
 /**
  * The repository acts as an intermediary between the database and the viewmodel.
@@ -49,11 +39,8 @@ class ChatsRepositoryImpl : ChatsRepository {
     private val appDataContainer: AppDataContainer by inject()
     private val messageDao: MessageDao = appDataContainer.appDb.messageDao()
     private val contactDao: ContactDao = appDataContainer.appDb.contactDao()
+    private val chatDao: ChatDao = appDataContainer.appDb.chatDao()
 
-
-    override fun getAllChatIdsINSTANT(): List<Int> {
-        return messageDao.getChatIds()
-    }
 
     override suspend fun getAllChatIds(): Flow<List<Int>> {
         return messageDao.getAllChatIds()
@@ -94,46 +81,25 @@ class ChatsRepositoryImpl : ChatsRepository {
         }
     }
 
+    override suspend fun getAllChats(): Flow<List<Chat>> {
+        return chatDao.getAllChats()
+    }
 
-    /*
+    override suspend fun upsertChat(chat: Chat) {
+        chatDao.upsertChat(chat)
+    }
+
+    override suspend fun upsertChats(chats: List<Chat>) {
+        chatDao.upsertChats(chats)
+    }
+
+    override suspend fun deleteChat(chat: Chat) {
+        messageDao.deleteMessagesByChatId(chat.chatId)
+        chatDao.deleteChat(chat)
+    }
+
     override suspend fun deleteAllChats() {
-        messageDao.deleteAllMessages()
         chatDao.deleteAllChats()
     }
-        override fun getAllMessagesSortedByChatId(): Flow<List<Message>> =
-            messageDao.getAllMessagesSortedByChatId()
 
-        override fun getAllChats(): Flow<List<Chat>> {
-            TODO("Not yet implemented")
-        }
-
-        override fun getMessagesByChatId(chatId: Int): Flow<List<Message>> =
-            messageDao.getMessagesByChatId(chatId)
-
-        override fun getMessageById(messageId: Int): Flow<Message> =
-            messageDao.getMessageById(messageId)
-
-        override fun getChatById(chatId: Int): Flow<Chat> =
-            chatDao.getChatById(chatId)
-
-        override suspend fun updateMessages(messages: List<Message>) =
-            messageDao.updateMessages(messages)
-
-        override suspend fun insertMessage(message: Message) {
-            messageDao.insertMessage(message)
-        }
-
-        override suspend fun insertAllMessages(messages: List<Message>) =
-            messageDao.insertAllMessages(messages)
-
-
-        override suspend fun deleteChatById(chatId: Int) {
-            messageDao.deleteMessagesByChatId(chatId)
-            chatDao.deleteChatById(chatId)
-        }
-
-        override suspend fun deleteMessage(message: Message) {
-            messageDao.deleteMessage(message)
-        }
-     */
 }

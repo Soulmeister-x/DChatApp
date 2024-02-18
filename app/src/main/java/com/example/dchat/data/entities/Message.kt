@@ -14,6 +14,7 @@ import java.util.Calendar
  * @property timestamp a string representation of the time and date, when this message was sent
  */
 @Entity(tableName = "messages")
+// TODO: rename to DbMessage and make Message domain object
 data class Message(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val chatId: Int,

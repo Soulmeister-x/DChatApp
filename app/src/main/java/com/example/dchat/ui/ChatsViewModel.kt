@@ -2,93 +2,78 @@ package com.example.dchat.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.dchat.data.entities.Message
+import com.example.dchat.data.entities.Chat
+import com.example.dchat.data.entities.Contact
 import com.example.dchat.network.ChatsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/**
- * Viewmodel for [ChatsScreen]
- * @param chatsRepository repo that has access to DAOs of database
- */
 class ChatsViewModel(
-    private val chatsRepository: ChatsRepository,
+    private val chatsRepository: ChatsRepository
 ): ViewModel() {
-    private val _chats: MutableStateFlow<ChatsUiState> = MutableStateFlow(ChatsUiState(emptyList()))
-    val chats: StateFlow<ChatsUiState> = _chats.asStateFlow()
+    private val _chats: MutableStateFlow<ChatsUiState> =
+        MutableStateFlow(ChatsUiState(emptyList()))
+    val chats = _chats.asStateFlow()
 
     init {
         loadData()
     }
 
-    fun upsertMessages(messages: List<Message>) {
-        viewModelScope.launch {
-            chatsRepository.upsertMessages(messages)
-        }
-    }
-
-    fun insertMessage(message: Message) {
-        viewModelScope.launch {
-            chatsRepository.insertMessage(message)
-        }
-    }
-
-    fun deleteMessage(message: Message) {
-        viewModelScope.launch {
-            chatsRepository.deleteMessage(message)
-        }
-    }
-
-    fun getAllChatsPreview(): List<Message> {
-        val chatIds = chatsRepository.getAllChatIdsINSTANT()
-        val chatList: MutableList<Message> = mutableListOf()
-        chatIds.forEach { chatId ->
-            viewModelScope.launch {
-                chatsRepository.getLastMessageByChatId(chatId)
-                    .flowOn(Dispatchers.IO)
-                    .collect {
-                        chatList.add(it)
-                    }
-            }
-        }
-        return chatList
-    }
-
     /**
-     * This function loads the chat data from the database to [ChatsUiState].
+     * This function loads the chat data from the database to [MessagesUiState].
      */
     private fun loadData() {
         viewModelScope.launch {
-            chatsRepository.getAllMessages()
+            chatsRepository.getAllChats()
                 .flowOn(Dispatchers.IO)
                 .distinctUntilChanged()
-                .collect { chatList ->
+                .collect { memberList ->
                     _chats.update {
-                        it.copy(chats = chatList)
+                        it.copy(chats = memberList)
                     }
                 }
         }
     }
-}
 
-data class ChatsUiState(val chats: List<Message>) {
-    fun getAllChatIds(): Set<Int> = chats.map { it.chatId }.toSet()
-
-    fun getAllChatPreviews(): List<Message> {
-        val chatIds = getAllChatIds()
-        val ret = mutableListOf<Message>()
-        chatIds.forEach { chatId ->
-            ret.add(chats.last { chatId == it.chatId })
+    fun upsertChat(chat: Chat) {
+        viewModelScope.launch{
+            chatsRepository.upsertChat(chat)
         }
-        return ret
     }
 
-    fun getMessagesByChatId(chatId: Int): List<Message> =
-        chats.filter { it.chatId == chatId }
+    fun upsertChats(chats: List<Chat>) {
+        viewModelScope.launch {
+            chatsRepository.upsertChats(chats)
+        }
+    }
+
+    fun nukeTable() {
+        viewModelScope.launch {
+            chatsRepository.deleteAllChats()
+        }
+    }
+
+    fun deleteChat(chat: Chat) {
+        viewModelScope.launch {
+            chatsRepository
+        }
+    }
+
+}
+
+data class ChatsUiState(val chats: List<Chat>) {
+    fun findChatIdForContact(contact: Contact): Int {
+        return chats.find {
+            it.participants.size == 1 && it.participants[0] == contact
+        }?.chatId ?: 0
+    }
+
+    fun getChatIds(): List<Int> {
+        return chats.map { it.chatId }
+    }
 }
