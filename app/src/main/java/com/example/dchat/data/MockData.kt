@@ -1,3 +1,4 @@
+@file:Suppress("MagicNumber")
 package com.example.dchat.data
 
 import com.example.dchat.data.entities.Chat

@@ -17,10 +17,10 @@ val networkModule = module {
 }
 
 // TODO: move baseUrl to sharedPreferences or BuildConfig
-const val baseUrl = "https://vivoliva.de/xrpc/"
+const val BASE_URL = "https://vivoliva.de/xrpc/"
 
 fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
-    Retrofit.Builder().baseUrl(baseUrl).client(okHttpClient)
+    Retrofit.Builder().baseUrl(BASE_URL).client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create()).build()
 
 fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient =
