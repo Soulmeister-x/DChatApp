@@ -12,7 +12,7 @@ import androidx.navigation.navArgument
 fun MyAppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    startDestination: String = "chats",
+    startDestination: String = "home",
 ) {
 
     NavHost(
@@ -20,6 +20,11 @@ fun MyAppNavHost(
         navController = navController,
         startDestination = startDestination,
     ) {
+        composable("home") {
+            HomeScreen(
+                navController = navController
+            )
+        }
         composable("chats") {
             ChatsScreen(
                 navController = navController,
